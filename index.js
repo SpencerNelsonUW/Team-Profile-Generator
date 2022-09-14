@@ -8,7 +8,7 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern'); 
 
 
-const teamArray = []; 
+const employeeTeam = []; 
 
 const addManager = () => {
     return inquirer.prompt ([
@@ -33,12 +33,11 @@ const addManager = () => {
             message: "What is the manager's office number",
         }
     ])
-    .then(managerInput => {
-        const  { name, id, email, officeNumber } = managerInput; 
+    .then(managerData => {
+        const  { name, id, email, officeNumber } = managerData; 
         const manager = new Manager (name, id, email, officeNumber);
 
-        teamArray.push(manager); 
-        console.log(manager); 
+        employeeTeam.push(manager);  
     })
 };
 
@@ -48,13 +47,13 @@ const addEmployee = () => {
         {
             type: 'list',
             name: 'role',
-            message: "What employee role are you adding?",
+            message: "What type of employee are you adding?",
             choices: ['Engineer', 'Intern']
         },
         {
             type: 'input',
             name: 'name',
-            message: "What's the name of the employee?", 
+            message: "What is the new employees name?", 
         },
         {
             type: 'input',
@@ -64,7 +63,7 @@ const addEmployee = () => {
         {
             type: 'input',
             name: 'email',
-            message: "Please enter the employee's email.",
+            message: "What is the employee's email?",
         },
         {
             type: 'input',
@@ -74,7 +73,7 @@ const addEmployee = () => {
         {
             type: 'input',
             name: 'school',
-            message: "Please enter the intern's school",
+            message: "Please enter the school the intern is enrolled in or graduated from",
         },
         {
             type: 'confirm',
@@ -99,26 +98,26 @@ const addEmployee = () => {
             console.log(employee);
         }
 
-        teamArray.push(employee); 
+        employeeTeam.push(employee); 
 
         if (confirmAddEmployee) {
-            return addEmployee(teamArray); 
+            return addEmployee(employeeTeam); 
         } else {
-            return teamArray;
+            return employeeTeam;
         }
     })
 
 };
 
 
-// function to generate HTML page file using file system 
+// function to generate HTML page
 const writeFile = data => {
     fs.writeFile('./dist/index.html', data, err => {
         // if there is an error 
         if (err) {
             console.log(err);
             return;
-        // when the profile has been created 
+        // if the profile is created succesfully 
         } else {
             console.log("Your team profile has been successfully created! Please check out the index.html")
         }
@@ -127,8 +126,8 @@ const writeFile = data => {
 
 addManager()
   .then(addEmployee)
-  .then(teamArray => {
-    return generateHTML(teamArray);
+  .then(employeeTeam => {
+    return generateHTML(employeeTeam);
   })
   .then(pageHTML => {
     return writeFile(pageHTML);
